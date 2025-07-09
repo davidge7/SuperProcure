@@ -1,0 +1,92 @@
+🧩 ENTITY-RELATIONSHIP DIAGRAM: TABLES & RELATIONS
+1. users
+Field	Type	Description
+id	UUID (PK)	Unique user ID
+name	TEXT	Full name
+email	TEXT (unique)	User login/email ID
+password_hash	TEXT	Hashed password
+role	TEXT	Role: ProcurementLead, Finance, Vendor
+created_at	TIMESTAMP	Registration date
+
+2. vendors
+Field	Type	Description
+id	UUID (PK)	Unique vendor ID
+name	TEXT	Vendor name
+contact_info	TEXT	Email/Phone/Contact Person
+status	TEXT	Pending, Approved, Rejected
+created_by	UUID (FK)	Linked to users.id
+created_at	TIMESTAMP	Onboarding date
+
+🧩 Relation:
+
+vendors.created_by → users.id
+
+3. approvals
+Field	Type	Description
+id	UUID (PK)	Unique approval ID
+vendor_id	UUID (FK)	Linked to vendors.id
+approver_id	UUID (FK)	Linked to users.id
+status	TEXT	Approved, Rejected
+comments	TEXT	Optional remarks
+approved_at	TIMESTAMP	Approval timestamp
+
+🧩 Relations:
+
+approvals.vendor_id → vendors.id
+
+approvals.approver_id → users.id
+
+4. budgets
+Field	Type	Description
+id	UUID (PK)	Unique budget ID
+department	TEXT	Dept. name (e.g. IT, HR)
+fiscal_year	TEXT	e.g. 2024-25
+limit	DECIMAL	Budget limit
+spent	DECIMAL	Current expenditure
+created_at	TIMESTAMP	Created date
+
+5. transactions
+Field	Type	Description
+id	UUID (PK)	Unique transaction ID
+vendor_id	UUID (FK)	Linked to vendors.id
+budget_id	UUID (FK)	Linked to budgets.id
+amount	DECIMAL	Amount spent
+category	TEXT	Spend category
+timestamp	TIMESTAMP	Transaction time
+
+🧩 Relations:
+
+transactions.vendor_id → vendors.id
+
+transactions.budget_id → budgets.id
+
+6. alerts
+Field	Type	Description
+id	UUID (PK)	Unique alert ID
+message	TEXT	Alert content
+triggered_by	UUID (FK)	Linked to users.id or system
+severity	TEXT	Low, Medium, High
+created_at	TIMESTAMP	Time of alert
+
+7. audit_logs
+Field	Type	Description
+id	UUID (PK)	Unique log ID
+user_id	UUID (FK)	Who performed the action
+action	TEXT	What was done
+entity	TEXT	Affected entity (vendor, budget)
+entity_id	UUID	ID of the entity
+timestamp	TIMESTAMP	When it occurred
+
+✅ Relationships Summary:
+One user → many vendors
+
+One vendor → many approvals
+
+One vendor → many transactions
+
+One budget → many transactions
+
+One user → many audit logs
+
+Users can generate alerts or audit events
+

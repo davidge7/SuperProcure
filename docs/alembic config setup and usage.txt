@@ -1,0 +1,107 @@
+===========================================================
+🧠 ALEMBIC MIGRATION GUIDE FOR FASTAPI + SQLALCHEMY + POSTGRESQL
+===========================================================
+
+📘 What is Alembic?
+--------------------
+Alembic is a database migration tool for SQLAlchemy. It allows you to:
+✅ Track changes to your database schema over time
+✅ Version control your database like Git
+✅ Create, update, and rollback database tables safely
+
+📦 Prerequisites
+--------------------
+Make sure you have the following installed:
+- Python 3.9+
+- PostgreSQL (running locally or via Docker)
+- pip / virtualenv
+- Alembic (`pip install alembic`)
+
+🛠 Initial Setup (One-time only)
+--------------------
+1. Navigate to your backend folder:
+   > cd backend
+
+2. Initialize Alembic:
+   > alembic init alembic
+
+This creates:
+   ├── alembic/
+   │   ├── env.py
+   │   └── versions/
+   └── alembic.ini
+
+🧩 Configuration
+--------------------
+1. In `alembic.ini`, set your local DB URL:
+   sqlalchemy.url = postgresql://postgres:postgres@localhost:5432/smartprocure
+
+2. In `alembic/env.py`:
+   - Add:
+     from dotenv import load_dotenv
+     load_dotenv()
+     config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+
+   - Import your models and metadata:
+     from app.models import user
+     from app.db.session import Base
+     target_metadata = Base.metadata
+
+📥 Create & Apply Migrations
+--------------------
+1. After adding or updating your SQLAlchemy models, run:
+   > alembic revision --autogenerate -m "init"
+
+2. Then, apply the migration:
+   > alembic upgrade head
+
+🧪 Rollbacks (Optional)
+--------------------
+Undo the latest migration:
+   > alembic downgrade -1
+
+Go back to specific version:
+   > alembic downgrade <revision_id>
+
+🧠 Useful Alembic Commands
+--------------------
+| Task                      | Command                          |
+|---------------------------|----------------------------------|
+| Create migration          | alembic revision -m "desc"       |
+| Autogenerate from models  | alembic revision --autogenerate  |
+| Apply all migrations      | alembic upgrade head             |
+| Undo last migration       | alembic downgrade -1             |
+| Show current version      | alembic current                  |
+| Show migration history    | alembic history                  |
+| Sync DB to head (no run)  | alembic stamp head               |
+
+📂 Recommended Project Structure
+--------------------
+backend/
+├── alembic/
+│   ├── env.py
+│   ├── versions/
+├── alembic.ini
+├── app/
+│   ├── models/
+│   ├── db/
+│   ├── schemas/
+│   ├── crud/
+│   └── main.py
+
+⚙ Auto-run Alembic on App Start (DEV ONLY)
+--------------------
+In `main.py`, before app starts:
+   import subprocess
+   subprocess.run(["alembic", "upgrade", "head"])
+
+✅ Summary Workflow
+--------------------
+1. Create/Update models in app/models/
+2. Run:
+   > alembic revision --autogenerate -m "desc"
+3. Then:
+   > alembic upgrade head
+
+🚀 Done! Your database schema is now version-controlled, auditable, and safely updatable.
+

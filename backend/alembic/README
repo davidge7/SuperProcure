@@ -1,0 +1,28 @@
+# Alembic Migrations
+
+This directory contains the Alembic migration environment for the backend database.
+
+## Usage
+
+- **Create a new migration:**
+  ```sh
+  alembic revision --autogenerate -m "your message here"
+  ```
+- **Apply migrations:**
+  ```sh
+  alembic upgrade head
+  ```
+- **Downgrade migrations:**
+  ```sh
+  alembic downgrade -1
+  ```
+
+## Structure
+- `env.py`: Alembic environment configuration.
+- `versions/`: Auto-generated migration scripts.
+- `README`: This file.
+
+## Notes
+- Make sure your database connection settings are correct in your environment variables.
+- Migration scripts in `versions/` must be included in your deployment for migrations to work.
+- See the [Alembic documentation](https://alembic.sqlalchemy.org/en/latest/) for advanced usage.
