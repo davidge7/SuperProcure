@@ -29,3 +29,10 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     token = create_access_token({"sub": db_user.email})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.post("/logout")
+async def logout(token: Optional[str] = Depends(get_db)):
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"message": "User logged out."}
+    )
